@@ -1,7 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Website with Embedded React Widget</title>
+  <!-- Load React. -->
+  <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+  <!-- Load your app's JavaScript bundle. -->
+  <script src="https://alexander-e-bauer.github.io/chat_widget_i/static/js/main.175197d8.js"></script>
+  <!-- Load your app's CSS. -->
+  <link href="https://alexander-e-bauer.github.io/chat_widget_i/static/css/main.ebdd40da.css" rel="stylesheet">
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+  <h1>My Website</h1>
+  <p>This is my website content.</p>
+
+  <!-- This is where your React widget will be rendered -->
+  <div id="react-widget-root"></div>
+
+  <script>
+    // Initialize your React widget
+    ReactDOM.render(
+      React.createElement(MyReactWidget),
+      document.getElementById('react-widget-root')
+    );
+  </script>
 </body>
 </html>
