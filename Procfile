@@ -1,1 +1,1 @@
-web: gunicorn app:app
+web: gunicorn python_modules.chat_widget_backend.app:app
