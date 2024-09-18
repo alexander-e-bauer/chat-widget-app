@@ -56,3 +56,7 @@ def chat():
     response = f"{completion}"
     return jsonify({"response": response})
 
+
+x1 = chat_completion("hi")
+print(x1)
+
