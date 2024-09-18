@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import config
+
+openai_client = config.openai_client
 app = Flask(__name__)
 CORS(app)
 
@@ -50,6 +52,7 @@ def chat():
     message = data.get('message', '')
     # Here you would typically process the message and generate a response
     # For this example, we'll just echo the message back
-    response = f"You said: {message}"
+    completion = chat_completion(user_input=message)
+    response = f"{completion}"
     return jsonify({"response": response})
 
