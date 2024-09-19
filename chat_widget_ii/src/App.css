@@ -36,3 +36,94 @@
     transform: rotate(360deg);
   }
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes messageAppear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-messageAppear {
+  animation: messageAppear 0.3s ease-out;
+}
+
+/* Crisp hover effects */
+.hover-scale {
+  transition: transform 0.2s ease-in-out;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* Smooth focus transitions */
+input:focus, button:focus {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Subtle button press effect */
+button:active {
+  transform: scale(0.95);
+}
+
+/* Mobile-friendly styles */
+@media (max-width: 640px) {
+  .max-w-3xl {
+    max-width: 100%;
+  }
+
+  .rounded-lg {
+    border-radius: 0;
+  }
+
+  .p-4 {
+    padding: 1rem;
+  }
+
+  .text-xl {
+    font-size: 1.25rem;
+  }
+
+  .text-sm {
+    font-size: 0.875rem;
+  }
+
+  .w-8, .h-8 {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+/* Ensure the widget takes full height on mobile */
+@media (max-width: 640px) {
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  #root > div {
+    height: 100%;
+  }
+}
+
+/* Improve touch targets on mobile */
+@media (max-width: 640px) {
+  button, input {
+    min-height: 44px;
+  }
+}

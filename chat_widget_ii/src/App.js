@@ -7,7 +7,6 @@
      return (
        <div className="App">
          <header className="App-header">
-           <h1>React Chatbot Widget</h1>
            <ChatbotWidget />
          </header>
        </div>

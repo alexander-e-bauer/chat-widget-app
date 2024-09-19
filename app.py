@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 def chat_completion(user_input, system_input="you are a helpful assistant", image_path=None, tools=None,
-                    streaming=False):
+                    streaming=True):
     if image_path is None:
         messages = [
             {"role": "system", "content": system_input},
@@ -57,6 +57,4 @@ def chat():
     return jsonify({"response": response})
 
 
-x1 = chat_completion("hi")
-print(x1)
 
