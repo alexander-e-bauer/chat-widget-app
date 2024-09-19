@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 def chat_completion(user_input, system_input="you are a helpful assistant", image_path=None, tools=None,
-                    streaming=True):
+                    streaming=False):
     if image_path is None:
         messages = [
             {"role": "system", "content": system_input},
