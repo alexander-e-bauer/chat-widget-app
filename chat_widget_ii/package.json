@@ -2,7 +2,7 @@
   "name": "chat_widget_ii",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://alexander-e-bauer.github.io/",
+  "homepage": "https://alexander-e-bauer.github.io/chat",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
