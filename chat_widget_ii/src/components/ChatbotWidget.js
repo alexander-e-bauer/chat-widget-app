@@ -29,55 +29,24 @@ const ScrollArea = React.forwardRef(({ className, children }, ref) => (
   </div>
 ));
 
-const RadialMenu = ({ onSelect, isOpen, onClose }) => {
-  const items = [
-    { icon: <Home size={24} />, label: 'Home', value: 'home' },
-    { icon: <MessageSquare size={24} />, label: 'Chatbot', value: 'chatbot' },
-    { icon: <Settings size={24} />, label: 'Settings', value: 'settings' },
-  ];
 
-  return (
-    <div className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-300 ${isOpen ? 'opacity-100 z-50' : 'opacity-0 -z-10'}`}>
-      <div className="relative w-64 h-64">
-        {items.map((item, index) => {
-          const angle = (index / items.length) * 2 * Math.PI - Math.PI / 2;
-          const x = Math.cos(angle) * 100;
-          const y = Math.sin(angle) * 100;
-          return (
-            <button
-              key={item.value}
-              className="absolute w-16 h-16 rounded-full bg-white shadow-lg flex items-center justify-center transform transition-all duration-300 hover:scale-110"
-              style={{
-                left: `calc(50% + ${x}px - 32px)`,
-                top: `calc(50% + ${y}px - 32px)`,
-              }}
-              onClick={() => onSelect(item.value)}
-            >
-              {item.icon}
-            </button>
-          );
-        })}
-        <button
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-black text-white flex items-center justify-center"
-          onClick={onClose}
-        >
-          <X size={24} />
-        </button>
-      </div>
-    </div>
-  );
-};
 const ChatbotWidget = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollAreaRef = useRef(null);
+  const conversationIdRef = useRef(null);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    // Generate a unique conversation ID when the component mounts
+    conversationIdRef.current = `conversation-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  }, []);
 
   const sendMessage = async () => {
     if (input.trim() === '' || isLoading) return;
@@ -91,7 +60,10 @@ const ChatbotWidget = () => {
       const response = await fetch('https://chat-widget-app-8c3cca0ff3c0.herokuapp.com/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({
+          message: input,
+          conversationId: conversationIdRef.current
+        }),
       });
 
       if (response.ok) {
