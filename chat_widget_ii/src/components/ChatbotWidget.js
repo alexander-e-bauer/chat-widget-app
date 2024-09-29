@@ -53,6 +53,7 @@ const ChatbotWidget = () => {
     conversationIdRef.current = newConversationId;
     localStorage.setItem('conversationId', newConversationId);
   }
+  console.log("Current conversation ID:", conversationIdRef.current);
 }, []);
 
 
@@ -64,30 +65,34 @@ const ChatbotWidget = () => {
     setInput('');
     setIsLoading(true);
 
-    try {
-      const response = await fetch('https://chat-widget-app-8c3cca0ff3c0.herokuapp.com/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: input,
-          conversationId: conversationIdRef.current
-        }),
-      });
+      try {
+    console.log("Sending message with conversation ID:", conversationIdRef.current);
+    const response = await fetch('https://chat-widget-app-8c3cca0ff3c0.herokuapp.com/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: input,
+        conversationId: conversationIdRef.current
+      }),
+    });
 
-      if (response.ok) {
-        const data = await response.json();
-        setMessages((prevMessages) => [...prevMessages, { text: data.response, sender: 'bot' }]);
-      } else {
-        console.error('Error:', response.statusText);
-        setMessages((prevMessages) => [...prevMessages, { text: 'Oops, something went wrong!', sender: 'bot' }]);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      setMessages((prevMessages) => [...prevMessages, { text: 'Oops, something went wrong!', sender: 'bot' }]);
-    } finally {
-      setIsLoading(false);
+    if (response.ok) {
+      const data = await response.json();
+      console.log("Received response:", data);
+      setMessages((prevMessages) => [...prevMessages, { text: data.response, sender: 'bot' }]);
+    } else {
+      console.error('Error:', response.statusText);
+      const errorData = await response.json();
+      console.error('Error details:', errorData);
+      setMessages((prevMessages) => [...prevMessages, { text: `Error: ${errorData.error || 'Unknown error'}`, sender: 'bot' }]);
     }
-  };
+  } catch (error) {
+    console.error('Error:', error);
+    setMessages((prevMessages) => [...prevMessages, { text: `Error: ${error.message}`, sender: 'bot' }]);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden font-mono w-full sm:max-w-md">
