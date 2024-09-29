@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Bot, User, Loader2, Home, MessageSquare, Settings, X } from 'lucide-react';
+import { Send, Bot, User, Loader2 } from 'lucide-react';
 import MarkdownRenderer from "./MarkdownRenderer";
 
 const Button = React.forwardRef(({ className, children, ...props }, ref) => (
@@ -44,9 +44,17 @@ const ChatbotWidget = () => {
   }, [messages]);
 
   useEffect(() => {
-    // Generate a unique conversation ID when the component mounts
-    conversationIdRef.current = `conversation-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  }, []);
+  // Generate a unique conversation ID when the component mounts
+  const storedConversationId = localStorage.getItem('conversationId');
+  if (storedConversationId) {
+    conversationIdRef.current = storedConversationId;
+  } else {
+    const newConversationId = `conversation-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    conversationIdRef.current = newConversationId;
+    localStorage.setItem('conversationId', newConversationId);
+  }
+}, []);
+
 
   const sendMessage = async () => {
     if (input.trim() === '' || isLoading) return;
