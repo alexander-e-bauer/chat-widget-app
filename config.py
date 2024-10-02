@@ -5,7 +5,7 @@ import logging
 
 dotenv.load_dotenv()
 # Create a file handler that logs debug and higher level messages to a file
-file_handler = logging.FileHandler('isadora.log')
+file_handler = logging.FileHandler('logfile.log')
 file_handler.setLevel(logging.DEBUG)
 
 # Create a console handler with a higher log level
@@ -18,7 +18,7 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 file_handler.setFormatter(formatter)
 console_handler.setFormatter(formatter)
 
-logger = logging.getLogger('isadora')
+logger = logging.getLogger('logfile')
 logger.setLevel(logging.DEBUG)  # This sets the logger to handle all messages DEBUG and above
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
