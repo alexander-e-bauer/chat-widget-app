@@ -1,6 +1,10 @@
+
+
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 from flask_socketio import SocketIO, emit
+from flask_cors import CORS
+import eventlet
+
 import config
 import logging
 
@@ -9,12 +13,12 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 openai_client = config.openai_client
-app = Flask(__name__)
+eventlet.monkey_patch()
 
-# Update CORS configuration
+
+app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["https://alexander-e-bauer.github.io"]}})
 socketio = SocketIO(app, cors_allowed_origins=["https://alexander-e-bauer.github.io"], async_mode='eventlet')
-
 # In-memory storage for conversation history
 conversation_history = {}
 
