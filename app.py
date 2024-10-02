@@ -1,9 +1,10 @@
+import eventlet
+eventlet.monkey_patch()
 
 
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
-import eventlet
 import pandas as pd
 import ast
 import config
@@ -15,7 +16,6 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 openai_client = config.openai_client
-eventlet.monkey_patch()
 
 
 app = Flask(__name__)
