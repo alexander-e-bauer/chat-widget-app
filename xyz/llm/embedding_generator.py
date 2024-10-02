@@ -7,11 +7,14 @@ import pandas as pd
 from scipy import spatial
 import ast
 import tiktoken
+import markdown
+from bs4 import BeautifulSoup
 import tiktoken
 import openai
 import config
 import xyz.llm.embedding_model as flask_embeddings
-from xyz.llm.embedding_model import embedding_model, read_embedding, ask
+from xyz.llm.embedding_model import embedding_model
+
 
 
 
@@ -112,8 +115,8 @@ def get_source_code(directory):
 
 def get_document_text(directory):
     """
-    Returns the text content and embeddings of all Word documents and PDFs in a directory,
-    or from an Excel file if provided.
+    Returns the text content and embeddings of all Word documents, PDFs, Markdown files,
+    and HTML files in a directory, or from an Excel file if provided.
     """
     df = pd.DataFrame(columns=['filepath', 'text', 'embedding'])
 
@@ -123,7 +126,7 @@ def get_document_text(directory):
             if file.startswith('~$'):
                 continue
 
-            if file.endswith(('.doc', '.docx', '.pdf')):
+            if file.endswith(('.doc', '.docx', '.pdf', '.md', '.html')):
                 file_path = os.path.join(root, file)
 
                 try:
@@ -131,6 +134,10 @@ def get_document_text(directory):
                         raw_text = read_word_document(file_path)  # You need to implement this function
                     elif file.endswith('.pdf'):
                         raw_text = read_pdf_document(file_path)  # You need to implement this function
+                    elif file.endswith('.md'):
+                        raw_text = read_markdown_file(file_path)
+                    elif file.endswith('.html'):
+                        raw_text = read_html_file(file_path)
 
                     print(f"Processed document: {file_path}")
                     df = df._append({'filepath': file_path, 'text': raw_text}, ignore_index=True)
@@ -147,6 +154,24 @@ def get_document_text(directory):
     return df
 
 
+def read_markdown_file(file_path):
+    """
+    Read and convert a Markdown file to plain text.
+    """
+    with open(file_path, 'r', encoding='utf-8') as file:
+        md_content = file.read()
+    html_content = markdown.markdown(md_content)
+    soup = BeautifulSoup(html_content, 'html.parser')
+    return soup.get_text()
+
+def read_html_file(file_path):
+    """
+    Read an HTML file and extract its text content.
+    """
+    with open(file_path, 'r', encoding='utf-8') as file:
+        html_content = file.read()
+    soup = BeautifulSoup(html_content, 'html.parser')
+    return soup.get_text()
 
 
 def read_word_document(file_path):
