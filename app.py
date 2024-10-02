@@ -105,7 +105,7 @@ def chat_completion_with_embeddings(user_input: str, df: pd.DataFrame, conversat
             model=model,
             messages=messages,
             stream=streaming,
-            temperature=3
+            temperature=0
         )
 
         if not streaming:
