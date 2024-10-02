@@ -142,7 +142,7 @@ def chat():
     df= read_embedding('embeddings/resume_test.csv')
 
     try:
-        completion = chat_completion_with_embeddings(user_input=message, conversation_id=conversation_id, df=df)
+        completion = chat_completion(user_input=message, conversation_id=conversation_id, df=df)
         response = f"{completion}"
         logger.debug(f"Sending response: {response}")
         logger.debug(f"Updated conversation history: {conversation_history[conversation_id]}")
