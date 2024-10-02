@@ -75,10 +75,6 @@ def remove_stuff(text: str) -> str:
     for url in urls:
         text = text.replace(url, placeholder)
 
-    # Remove punctuation
-    text = re.sub(r'[^\w\s]', '', text)
-    # Remove newline and tab characters
-    text = re.sub(r'[\n\t]+', '', text)
     # Remove large spaces (5 or more spaces)
     text = re.sub(r' {5,}', ' ', text)
 
@@ -189,6 +185,7 @@ def query_message_code(
 def ask(
         query: str,
         df: pd.DataFrame,
+        conversation_id,
         model: str = OAI.gpt4o,
         print_message: bool = False,
 ) -> str:
@@ -203,6 +200,7 @@ def ask(
     response = OAI.client.chat.completions.create(
         model=model,
         messages=messages,
+        conversation_id=conversation_id,
         temperature=0
     )
     response_message = response.choices[0].message.content
@@ -212,6 +210,7 @@ def ask(
 def ask_familiar(
         query: str,
         df: pd.DataFrame,
+        conversation_id,
         model: str = OAI.gpt4o,
         print_message: bool = False,
 ) -> str:
@@ -229,6 +228,7 @@ def ask_familiar(
     response = OAI.client.chat.completions.create(
         model=model,
         messages=messages,
+        conversation_id=conversation_id,
         temperature=0
     )
     response_message = response.choices[0].message.content

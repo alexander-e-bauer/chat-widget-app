@@ -1,12 +1,23 @@
 import os
 from pathlib import Path
 import pandas as pd
-
+import docx
+from PyPDF2 import PdfReader
+import re
+import pandas as pd
+from scipy import spatial
+import ast
+import tiktoken
 import tiktoken
 import openai
 import config
 import xyz.llm.embedding_model as flask_embeddings
+from xyz.llm.embedding_model import embedding_model, read_embedding, ask
+
+
+
 log = config.log
+OAI = config.OAI
 
 
 
@@ -22,6 +33,43 @@ def save_text_to_file(text, file_path):
     file_path = Path(file_path)
     with open(file_path, 'w') as file:
         file.write(text)
+
+
+
+def remove_stuff(text: str) -> str:
+    """Remove punctuation (except in URLs), newline, tab characters, and large spaces."""
+    # Pattern to identify URLs
+    url_pattern = r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+    # Find all URLs using the pattern
+    urls = re.findall(url_pattern, text)
+    # Replace URLs with a placeholder to avoid altering them
+    placeholder = "URL_PLACEHOLDER"
+    for url in urls:
+        text = text.replace(url, placeholder)
+
+    # Remove large spaces (5 or more spaces)
+    text = re.sub(r' {5,}', ' ', text)
+
+    # Restore URLs from placeholders
+    for url in urls:
+        text = text.replace(placeholder, url, 1)
+
+    return text
+
+
+
+def get_embedding(text_to_embed):
+    text_to_embed = remove_stuff(text_to_embed)
+    # Embed a line of text
+    response = OAI.client.embeddings.create(
+        model=embedding_model,
+        input=[text_to_embed]
+    )
+    # Extract the AI output embedding as a list of floats
+    embedding = response.data[0].embedding
+    print(f"---\nEmbedding: {embedding} \nText: {text_to_embed}")
+
+    return embedding
 
 
 def get_source_code(directory):
@@ -59,6 +107,66 @@ def get_source_code(directory):
                 df = df._append({'filepath': file_path, 'text': raw_text}, ignore_index=True)
 
     return df
+
+
+
+
+def get_document_text(directory):
+    """
+    Returns the text content and embeddings of all Word documents and PDFs in a directory,
+    or from an Excel file if provided.
+    """
+    df = pd.DataFrame(columns=['filepath', 'text', 'embedding'])
+
+    # Process documents in directory
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.startswith('~$'):
+                continue
+
+            if file.endswith(('.doc', '.docx', '.pdf')):
+                file_path = os.path.join(root, file)
+
+                try:
+                    if file.endswith(('.doc', '.docx')):
+                        raw_text = read_word_document(file_path)  # You need to implement this function
+                    elif file.endswith('.pdf'):
+                        raw_text = read_pdf_document(file_path)  # You need to implement this function
+
+                    print(f"Processed document: {file_path}")
+                    df = df._append({'filepath': file_path, 'text': raw_text}, ignore_index=True)
+                except Exception as e:
+                    print(f"Error processing {file_path}: {str(e)}")
+
+    if df.empty:
+        print("No valid documents found.")
+        return df
+
+    # Generate embeddings using the get_embedding function
+    df['embedding'] = df['text'].astype(str).apply(get_embedding)
+
+    return df
+
+
+
+
+def read_word_document(file_path):
+    """Reads the text content of a Word document."""
+    doc = docx.Document(file_path)
+    full_text = []
+    for para in doc.paragraphs:
+        full_text.append(para.text)
+    return '\n'.join(full_text)
+
+
+def read_pdf_document(file_path):
+    """Reads the text content of a PDF document."""
+    with open(file_path, 'rb') as file:
+        pdf_reader = PdfReader(file)
+        full_text = []
+        for page in pdf_reader.pages:
+            full_text.append(page.extract_text())
+    return '\n'.join(full_text)
 
 
 def read_file_as_raw_text(file_path):
@@ -105,6 +213,14 @@ def create_excel_file(filepath):
     return df
 
 
+def create_excel_file_text(target_directory, filepath):
+    # Save the DataFrame to an Excel file
+    df = get_document_text(target_directory)
+
+    df.to_excel(filepath, index=False, header=False, engine='openpyxl')
+    return df
+
+
 def save_source():
     global source_code
     filepath = Path('code/source_code.txt')
@@ -119,8 +235,8 @@ def create_embeddings_of_self():
     flask_embeddings.create_embedding_df('../llm/embeddings/code_metadata.xlsx',
                                          '../llm/embeddings/code_metadata.csv')
 
-def create_embeddings_of_text(name):
-    create_excel_file(f'../llm/embeddings/{name}.xlsx')
+def create_embeddings_of_text(target, name):
+    create_excel_file_text(target, f'../llm/embeddings/{name}.xlsx')
     flask_embeddings.create_embedding_df(f'../llm/embeddings/{name}.xlsx',
                                          f'../llm/embeddings/{name}.csv')
 
@@ -130,10 +246,29 @@ def relatedness(prompt):
     print(rel)
     return rel
 
+#df = read_embedding('embeddings/resume_test.csv')
 
-#answer = flask_embeddings.ask("explain this code", print_message=True)
+#print(df)
+#answer = ask_familiar("explain this code", df=df, print_message=True, conversation_id='conversation-1727902220357-g6xwoelao')
 #print(answer)
 
+
+#create_embeddings_of_text('../llm/knowledge_sources/personal', 'resume_test')
 #create_embeddings_of_self()
 
+
+def save_embeddings(directory, output_path):
+    df = get_document_text(directory)  # For processing documents in a directory
+    print(df.head())
+    df.to_csv(output_path, index=False)
+
+
+directory = "knowledge_sources/personal"
+output_path = "embeddings/resume_test.csv"
+#save_embeddings(directory, output_path)
+
+#df = read_embedding('embeddings/resume_test.csv')
+#rint(df)
+#answer = ask("talk to me about this resume", df=df, print_message=True, conversation_id='conversation-1727902220357-g6xwoelao')
+#print(answer)
 
