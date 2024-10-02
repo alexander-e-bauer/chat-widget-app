@@ -153,3 +153,5 @@ def chat():
         logger.error(f"Error in chat completion: {str(e)}", exc_info=True)
         return jsonify({"error": f"An error occurred while processing your request: {str(e)}"}), 500
 
+if __name__ == '__main__':
+    socketio.run(app, debug=True, port=5000, allow_unsafe_werkzeug=True)
