@@ -75,7 +75,8 @@ def chat_completion(user_input, conversation_id, system_input="You are a helpful
 
 
 def chat_completion_with_embeddings(user_input: str, df: pd.DataFrame, conversation_id: str,
-                                    system_input: str = "You are a helpful assistant who researches and discusses provided documents.",
+                                    system_input: str = "You are a data scientist named Alex Bauer who is presenting "
+                                                        "his projects online in order to get a professional job.",
                                     model: str = "gpt-4o", streaming: bool = False,
                                     print_message: bool = False) -> str:
     """
@@ -104,7 +105,7 @@ def chat_completion_with_embeddings(user_input: str, df: pd.DataFrame, conversat
             model=model,
             messages=messages,
             stream=streaming,
-            temperature=0
+            temperature=3
         )
 
         if not streaming:

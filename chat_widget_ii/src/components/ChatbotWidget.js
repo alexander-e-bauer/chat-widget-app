@@ -114,6 +114,12 @@ const ChatbotWidget = () => {
   return () => socket.current.disconnect();
 }, []);
 
+  useEffect(() => {
+  document.body.className = darkMode ? 'dark-mode' : 'light-mode';
+}, [darkMode]);
+
+
+
 
 
 
@@ -163,7 +169,7 @@ const ChatbotWidget = () => {
     <div className={`font-sans ${darkMode ? 'dark' : ''}`}>
       <div className={`bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden w-full h-full sm:max-w-md sm:h-[600px] flex flex-col fixed inset-0 sm:relative sm:inset-auto transition-colors duration-200`}>
         <div className={`bg-gray-50 dark:bg-gray-700 p-4 border-b border-gray-200 dark:border-gray-600 flex justify-between items-center`}>
-          <h2 className={`text-xl font-bold text-gray-800 dark:text-white`}>AI Assistant</h2>
+          <h2 className={`text-xl font-bold text-gray-800 dark:text-white`}>Alex's React Bot</h2>
           <div className="flex space-x-2">
             <Button
               onClick={startNewConversation}

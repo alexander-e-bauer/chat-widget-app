@@ -1,3 +1,44 @@
+:root {
+  --transition-speed: 0.3s;
+}
+
+body,
+body * {
+  transition: background-color var(--transition-speed) ease,
+              color var(--transition-speed) ease,
+              border-color var(--transition-speed) ease;
+}
+
+body.dark-mode {
+  --bg-color: #1a1a1a;
+  --text-color: #ffffff;
+  --input-bg: #333333;
+  --border-color: #444444;
+  --code-bg: #2a2a2a;
+  --code-color: #e0e0e0;
+}
+
+body.light-mode {
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --input-bg: #f0f0f0;
+  --border-color: #cccccc;
+  --code-bg: #f4f4f4;
+  --code-color: #333333;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+}
+
 .App {
   text-align: center;
 }
@@ -61,7 +102,6 @@
   animation: messageAppear 0.3s ease-out;
 }
 
-/* Crisp hover effects */
 .hover-scale {
   transition: transform 0.2s ease-in-out;
 }
@@ -70,28 +110,74 @@
   transform: scale(1.05);
 }
 
-/* Smooth focus transitions */
-input:focus, button:focus {
+input, textarea, button {
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  font-size: 1rem;
   transition: all 0.2s ease-in-out;
 }
 
-/* Subtle button press effect */
+input:focus, textarea:focus, button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
 button:active {
   transform: scale(0.95);
 }
 
-/* Mobile-friendly styles */
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+pre, code {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+pre {
+  background-color: var(--code-bg);
+  color: var(--code-color);
+  padding: 1rem;
+  border-radius: 0.25rem;
+  overflow-x: auto;
+}
+
+code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9em;
+  background-color: var(--code-bg);
+  color: var(--code-color);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+}
+
+.message-bubble {
+  transition: background-color var(--transition-speed) ease,
+              box-shadow var(--transition-speed) ease;
+  background-color: var(--input-bg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
 @media (max-width: 640px) {
   .max-w-3xl {
     max-width: 100%;
   }
 
   .rounded-lg {
-    border-radius: 0;
+    border-radius: 0.75rem;
   }
 
   .p-4 {
-    padding: 1rem;
+    padding: 0.75rem;
   }
 
   .text-xl {
@@ -106,9 +192,20 @@ button:active {
     width: 2rem;
     height: 2rem;
   }
+
+  pre, code {
+    font-size: 0.8em;
+  }
+
+  pre {
+    padding: 0.75rem;
+  }
+
+  button, input, textarea {
+    min-height: 44px;
+  }
 }
 
-/* Ensure the widget takes full height on mobile */
 @media (max-width: 640px) {
   html, body, #root {
     height: 100%;
@@ -120,12 +217,3 @@ button:active {
     height: 100%;
   }
 }
-
-/* Improve touch targets on mobile */
-@media (max-width: 640px) {
-  button, input {
-    min-height: 44px;
-  }
-}
-
-
