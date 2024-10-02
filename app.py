@@ -41,8 +41,6 @@ def chat_completion(user_input, conversation_id, system_input="You are a helpful
         completion = openai_client.chat.completions.create(
             model="gpt-4",
             messages=messages,
-            tools=tools,
-            tool_choice="auto",
             stream=streaming
         )
 
