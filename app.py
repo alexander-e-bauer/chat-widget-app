@@ -1,7 +1,7 @@
 import eventlet
 eventlet.monkey_patch()
 
-
+import os
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
@@ -139,7 +139,7 @@ def chat():
     conversation_id = data.get('conversationId', 'default')
     logger.debug(f"Received chat request. Message: {message}, Conversation ID: {conversation_id}")
     logger.debug(f"Current conversation history: {conversation_history.get(conversation_id, [])}")
-    df= read_embedding('embeddings/resume_test.csv')
+    df= read_embedding('xyz/llm/embeddings/resume_test.csv')
 
     try:
         completion = chat_completion_with_embeddings(user_input=message, conversation_id=conversation_id, df=df)
@@ -152,4 +152,6 @@ def chat():
         return jsonify({"error": f"An error occurred while processing your request: {str(e)}"}), 500
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, port=5000, allow_unsafe_werkzeug=True)
+    port = int(os.environ.get("PORT", 5000))
+    socketio.run(app, host='0.0.0.0', port=port)
+
