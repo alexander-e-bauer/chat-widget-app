@@ -12,10 +12,8 @@ openai_client = config.openai_client
 app = Flask(__name__)
 
 # Update CORS configuration
-CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "https://alexander-e-bauer.github.io"]}})
-
-# Update SocketIO configuration
-socketio = SocketIO(app, cors_allowed_origins=["http://localhost:3000", "https://alexander-e-bauer.github.io"], async_mode='gevent')
+CORS(app, resources={r"/*": {"origins": ["https://alexander-e-bauer.github.io"]}})
+socketio = SocketIO(app, cors_allowed_origins=["https://alexander-e-bauer.github.io"], async_mode='eventlet')
 
 # In-memory storage for conversation history
 conversation_history = {}

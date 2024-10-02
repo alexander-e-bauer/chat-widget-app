@@ -4,7 +4,7 @@ import { Send, Bot, User, Loader2, RefreshCw, Moon, Sun } from 'lucide-react';
 import MarkdownRenderer from "./MarkdownRenderer";
 import io from 'socket.io-client';
 
-const API_URL = 'https://chat-widget-app-8c3cca0ff3c0.herokuapp.com/api/chat'
+const API_URL = 'https://chat-widget-app-8c3cca0ff3c0.herokuapp.com';
 
 const Button = React.forwardRef(({ className, children, ...props }, ref) => (
   <button
@@ -104,12 +104,16 @@ const ChatbotWidget = () => {
 }, []);
 
   useEffect(() => {
-  socket.current = io(API_URL);
+  socket.current = io(API_URL, {
+    transports: ['websocket'],
+    upgrade: false
+  });
   socket.current.on('typing', () => setIsTyping(true));
   socket.current.on('stop_typing', () => setIsTyping(false));
 
   return () => socket.current.disconnect();
 }, []);
+
 
 
 
