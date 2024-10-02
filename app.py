@@ -80,6 +80,9 @@ oai = llm_blueprint.init_app(app)
 # Update CORS configuration
 CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "https://alexander-e-bauer.github.io"]}})
 
+# Update SocketIO configuration
+socketio = SocketIO(app, cors_allowed_origins=["http://localhost:3000", "https://alexander-e-bauer.github.io"])
+
 # In-memory storage for conversation history
 conversation_history = {}
 
@@ -124,6 +127,13 @@ def chat_completion(user_input, conversation_id, system_input="You are a helpful
         logger.error(f"Error in chat completion: {str(e)}", exc_info=True)
         raise
 
+@socketio.on('typing')
+def handle_typing(data):
+    emit('typing', data, broadcast=True, include_self=False)
+
+@socketio.on('stop_typing')
+def handle_stop_typing(data):
+    emit('stop_typing', data, broadcast=True, include_self=False)
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
