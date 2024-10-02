@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Bot, User, Loader2, RefreshCw } from 'lucide-react';
 import MarkdownRenderer from "./MarkdownRenderer";
-import io from 'socket.io-client';
 
 const Button = React.forwardRef(({ className, children, ...props }, ref) => (
   <button
@@ -38,7 +37,6 @@ const ChatbotWidget = () => {
   const conversationIdRef = useRef(null);
   const typingTimeout = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
-  const socket = useRef(null);
 
   const startNewConversation = () => {
     const newConversationId = `conversation-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -83,34 +81,6 @@ const ChatbotWidget = () => {
     };
   }, []);
 
-  useEffect(() => {
-  socket.current = io('http://localhost:5000', {
-    transports: ['websocket', 'polling'],
-    withCredentials: true
-  });
-  socket.current.on('typing', () => setIsTyping(true));
-  socket.current.on('stop_typing', () => setIsTyping(false));
-
-  return () => {
-    socket.current.disconnect();
-    if (typingTimeout.current) {
-      clearTimeout(typingTimeout.current);
-    }
-  };
-}, []);
-
-  const handleInputChange = (e) => {
-    setInput(e.target.value);
-    socket.current.emit('typing', { conversationId: conversationIdRef.current });
-
-    if (typingTimeout.current) {
-      clearTimeout(typingTimeout.current);
-    }
-
-    typingTimeout.current = setTimeout(() => {
-      socket.current.emit('stop_typing', { conversationId: conversationIdRef.current });
-    }, 1000);
-  };
 
   const sendMessage = async () => {
     if (input.trim() === '' || isLoading) return;
@@ -208,7 +178,6 @@ const ChatbotWidget = () => {
           <Input
             type="text"
             value={input}
-            onChange={handleInputChange}
             onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
             placeholder="Type your message..."
             className="flex-grow bg-white text-black placeholder-gray-400 border-gray-300 focus:ring-black focus:border-black"
