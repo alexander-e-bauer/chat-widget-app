@@ -75,7 +75,7 @@ def chat_completion(user_input, conversation_id, system_input="You are a helpful
 
 def chat_completion_with_embeddings(user_input: str, df: pd.DataFrame, conversation_id: str,
                                     system_input: str = "You are a helpful assistant who researches and discusses provided documents.",
-                                    model: str = "gpt-4", streaming: bool = False,
+                                    model: str = "gpt-4o", streaming: bool = False,
                                     print_message: bool = False) -> str:
     """
     Performs chat completion using GPT, incorporating conversation history and document embeddings.
@@ -142,7 +142,7 @@ def chat():
     df= read_embedding('embeddings/resume_test.csv')
 
     try:
-        completion = chat_completion(user_input=message, conversation_id=conversation_id, df=df)
+        completion = chat_completion_with_embeddings(user_input=message, conversation_id=conversation_id, df=df)
         response = f"{completion}"
         logger.debug(f"Sending response: {response}")
         logger.debug(f"Updated conversation history: {conversation_history[conversation_id]}")
