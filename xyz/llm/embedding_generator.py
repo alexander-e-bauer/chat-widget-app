@@ -16,8 +16,6 @@ import xyz.llm.embedding_model as flask_embeddings
 from xyz.llm.embedding_model import embedding_model
 
 
-
-
 log = config.log
 OAI = config.OAI
 
@@ -289,10 +287,9 @@ def save_embeddings(directory, output_path):
 
 directory = "knowledge_sources/personal"
 output_path = "embeddings/resume_test.csv"
-#save_embeddings(directory, output_path)
+save_embeddings(directory, output_path)
 
 #df = read_embedding('embeddings/resume_test.csv')
 #rint(df)
 #answer = ask("talk to me about this resume", df=df, print_message=True, conversation_id='conversation-1727902220357-g6xwoelao')
 #print(answer)
-

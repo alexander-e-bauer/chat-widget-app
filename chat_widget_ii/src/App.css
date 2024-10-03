@@ -2,6 +2,21 @@
   --transition-speed: 0.3s;
 }
 
+#chatbot-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Use full height of the parent */
+}
+
+.chat-area {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.input-area {
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
 body,
 body * {
   transition: background-color var(--transition-speed) ease,

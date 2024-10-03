@@ -118,6 +118,21 @@ const ChatbotWidget = () => {
   document.body.className = darkMode ? 'dark-mode' : 'light-mode';
 }, [darkMode]);
 
+  useEffect(() => {
+  const adjustHeight = () => {
+    // Calculate available height, excluding the address bar
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  };
+
+  adjustHeight();
+  window.addEventListener('resize', adjustHeight);
+
+  return () => {
+    window.removeEventListener('resize', adjustHeight);
+  };
+}, []);
+
 
 
 
@@ -163,10 +178,10 @@ const ChatbotWidget = () => {
   };
 
   return (
-    <div className={`font-sans ${darkMode ? 'dark' : ''} min-h-screen w-full flex items-center justify-center p-2 sm:p-4 pb-4 sm:pb-6`}>
-      <div
-        className={`bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl flex flex-col transition-colors duration-200`}
-        style={{ height: 'calc(100vh - 2rem)', maxHeight: '800px' }}
+  <div id="chatbot-container" className={`font-sans ${darkMode ? 'dark' : ''} min-h-screen w-full flex items-center justify-center p-2 sm:p-4 pb-4 sm:pb-6`}>
+    <div
+      className={`bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl flex flex-col transition-colors duration-200`}
+      style={{ height: 'calc(var(--vh, 1vh) * 100 - 2rem)', maxHeight: '800px' }}
       >
         {/* Header */}
         <div className={`bg-gray-50 dark:bg-gray-700 p-3 sm:p-4 border-b border-gray-200 dark:border-gray-600 flex justify-between items-center`}>
