@@ -287,7 +287,7 @@ def save_embeddings(directory, output_path):
 
 directory = "knowledge_sources/personal"
 output_path = "embeddings/resume_test.csv"
-#save_embeddings(directory, output_path)
+save_embeddings(directory, output_path)
 
 #df = read_embedding('embeddings/resume_test.csv')
 #rint(df)
