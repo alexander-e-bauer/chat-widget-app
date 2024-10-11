@@ -201,7 +201,7 @@ def ask(
         model=model,
         messages=messages,
         conversation_id=conversation_id,
-        temperature=1
+        temperature=1.9
     )
     response_message = response.choices[0].message.content
     return response_message
