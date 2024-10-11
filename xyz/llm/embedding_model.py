@@ -225,7 +225,8 @@ def ask_familiar(
                                       "provide specific examples whenever possible. Speak in a general manner, as you "
                                       "are open to many opportunities, not just one specific position, and could be "
                                       "contacted by anybody including potential employers. Don't respond with to many "
-                                      "words, dont use  verbose grammar, and dont oversell yourself"},
+                                      "words, dont use  verbose grammar, and dont oversell yourself. Don't give out "
+                                      "too much information without being prompted to do so."},
         {"role": "user", "content": message},
     ]
     response = OAI.client.chat.completions.create(
