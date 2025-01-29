@@ -13,7 +13,7 @@ import tiktoken
 import openai
 import config
 import xyz.llm.embedding_model as flask_embeddings
-from xyz.llm.embedding_model import embedding_model, read_embedding
+from xyz.llm.embedding_model import embedding_model, read_embedding, remove_stuff
 
 
 log = config.log
@@ -21,10 +21,17 @@ OAI = config.OAI
 
 
 def num_tokens(text):
-    encoding = tiktoken.encoding_for_model('gpt-4o')
-    encoding = encoding.encode(text, disallowed_special=())
-    print(len(encoding))
-    return len(encoding)
+    try:
+        # Get the encoding for the model
+        encoding = tiktoken.encoding_for_model('gpt-4o')
+        # Encode the text to count tokens
+        encoded_text = encoding.encode(text, disallowed_special=())
+        token_count = len(encoded_text)
+        print(f"Token count: {token_count}")
+        return token_count
+    except Exception as e:
+        print(f"Error in num_tokens: {e}")
+        return None
 
 
 def save_text_to_file(text, file_path):
@@ -33,41 +40,32 @@ def save_text_to_file(text, file_path):
         file.write(text)
 
 
-
-def remove_stuff(text: str) -> str:
-    """Remove punctuation (except in URLs), newline, tab characters, and large spaces."""
-    # Pattern to identify URLs
-    url_pattern = r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
-    # Find all URLs using the pattern
-    urls = re.findall(url_pattern, text)
-    # Replace URLs with a placeholder to avoid altering them
-    placeholder = "URL_PLACEHOLDER"
-    for url in urls:
-        text = text.replace(url, placeholder)
-
-    # Remove large spaces (5 or more spaces)
-    text = re.sub(r' {5,}', ' ', text)
-
-    # Restore URLs from placeholders
-    for url in urls:
-        text = text.replace(placeholder, url, 1)
-
-    return text
-
-
-
 def get_embedding(text_to_embed):
+    """
+    Generates an embedding for the given text using OpenAI's API.
+    """
     text_to_embed = remove_stuff(text_to_embed)
-    # Embed a line of text
-    response = OAI.client.embeddings.create(
-        model=embedding_model,
-        input=[text_to_embed]
-    )
-    # Extract the AI output embedding as a list of floats
-    embedding = response.data[0].embedding
-    print(f"---\nEmbedding: {embedding} \nText: {text_to_embed}")
+    # Check the number of tokens
+    token_count = num_tokens(text_to_embed)
+    max_token_limit = 8192  # Adjust based on your model's token limit
 
-    return embedding
+    if token_count is None or token_count > max_token_limit:
+        print(f"Text exceeds the token limit ({max_token_limit} tokens). Skipping embedding.")
+        return None
+
+    try:
+        # Embed a line of text
+        response = OAI.client.embeddings.create(
+            model=embedding_model,
+            input=[text_to_embed]
+        )
+        # Extract the AI output embedding as a list of floats
+        embedding = response.data[0].embedding
+        print(f"---\nEmbedding generated successfully for text: {text_to_embed[:100]}...")
+        return embedding
+    except Exception as e:
+        print(f"Error generating embedding: {e}")
+        return None
 
 
 def get_document_text(directory):
@@ -106,7 +104,8 @@ def get_document_text(directory):
 
                     if raw_text.strip():  # Check if the extracted text is not empty
                         print(f"Processed document: {file_path}")
-                        df = df._append({'filepath': file_path, 'text': raw_text}, ignore_index=True)
+                        embedding = get_embedding(raw_text)
+                        df = df._append({'filepath': file_path, 'text': raw_text, 'embedding': embedding}, ignore_index=True)
                     else:
                         print(f"No text found in document: {file_path}")
                 except Exception as e:
@@ -116,10 +115,8 @@ def get_document_text(directory):
         print("No valid documents found.")
         return df
 
-    # Generate embeddings using the get_embedding function
-    df['embedding'] = df['text'].astype(str).apply(get_embedding)
-
     return df
+
 
 
 def read_markdown_file(file_path):
@@ -191,6 +188,9 @@ def relatedness(prompt):
 
 
 def save_embeddings(directory, output_path):
+    """
+    Processes documents in a directory, generates embeddings, and saves them to a CSV file.
+    """
     # Ensure the parent directory for the output file exists
     output_dir = os.path.dirname(output_path)
     if not os.path.exists(output_dir):
@@ -200,8 +200,13 @@ def save_embeddings(directory, output_path):
     df = get_document_text(directory)  # For processing documents in a directory
     if df is None or df.empty:
         raise ValueError("No valid documents found in the directory.")
+
+    print("Sample of processed data:")
     print(df.head())
+
+    # Save DataFrame to CSV
     df.to_csv(output_path, index=False)
+
 
 
 
@@ -211,4 +216,4 @@ output_path = "xyz/llm/embeddings/resume_test.csv"
 
 #save_embeddings(directory, output_path)
 
-df = read_embedding('xyz/llm/embeddings/resume_test.csv')
+#df = read_embedding('xyz/llm/embeddings/resume_test.csv')

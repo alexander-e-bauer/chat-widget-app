@@ -61,6 +61,7 @@ logfile.log
 # Miscellaneous
 xyz/llm/knowledge_sources/
 xyz/llm/logfile.log
+scripts/
 404.html
 _headers
 cors.json

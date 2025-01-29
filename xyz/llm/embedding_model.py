@@ -17,8 +17,26 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
 
+def read_embedding(file_path):
+    """
+    Reads a CSV file and converts the 'embedding' column from a string to a list using ast.literal_eval.
+    """
+    def safe_literal_eval(x):
+        try:
+            return ast.literal_eval(x)
+        except (ValueError, SyntaxError) as e:
+            print(f"Error parsing embedding: {x}. Error: {e}")
+            return None  # Or you can return an empty list: []
 
-def read_embedding(embedding_path):
+    return pd.read_csv(
+        file_path,
+        converters={
+            'embedding': safe_literal_eval  # Use the safe version of literal_eval
+        }
+    )
+
+
+def read_embedding_(embedding_path):
     return pd.read_csv(
         embedding_path,
         index_col=0,
@@ -134,11 +152,15 @@ def query_message(
         return "DataFrame is empty. Cannot generate message."
 
     strings, relatednesses = strings_ranked_by_relatedness(query, df)
-    introduction = 'Use the Documents provided below to answer the users questions. ' 
+    introduction = ('Use the Documents provided below to answer the users questions. If the documents do not contain '
+                    'the answer to the question, try your best to provide and adequate answer based on information '
+                    'in the documents. Exclude any specific business names from the answer. Some of the documents '
+                    'provided such as Project Proposals and cover letters reference specific businesses and should be '
+                    'put in a more generalized context to provide a relevant answer to the user.')
     question = f"\n\nTask: {query}"
     message = introduction
     for string in strings:
-        next_article = f'\n\nOriginal Code File:\n"""\n{string}\n"""'
+        next_article = f'\n\nNext Document:\n"""\n{string}\n"""'
         if (
                 num_tokens(message + next_article + question, model=model)
                 > token_budget

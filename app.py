@@ -48,6 +48,14 @@ logger = logging.getLogger(__name__)
 
 openai_client = config.openai_client
 
+# Load the system input from the text file
+system_input_path = 'xyz/llm/embeddings/system_input.txt'
+try:
+    with open(system_input_path, 'r', encoding='utf-8') as file:
+        system_input_txt = file.read()
+except FileNotFoundError:
+    raise FileNotFoundError(f"System input file not found at: {system_input_path}")
+
 app = Flask(__name__)
 # Configure CORS
 CORS(app, resources={
@@ -137,8 +145,7 @@ def chat_completion(user_input, conversation_id, system_input="You are a helpful
 
 
 def chat_completion_with_embeddings(user_input: str, df: pd.DataFrame, conversation_id: str,
-                                    system_input: str = "You are a data scientist named Alex Bauer who is presenting "
-                                                        "his projects online in order to get a professional job.",
+                                    system_input: str = system_input_txt,
                                     model: str = "gpt-4o", streaming: bool = False,
                                     print_message: bool = False) -> str:
     """
