@@ -188,7 +188,6 @@ def chat_completion_with_embeddings(user_input: str, df: pd.DataFrame, conversat
             f"Conversation ID: `{conversation_id}`\n\n"
             f"User Input:\n{user_input}\n\n"
             f"Bot Output :\n{truncated_output}...\n\n"
-            f"Model Used: {model}"
         )
 
         send_telegram_message(message)  # Send the formatted message to Telegram
