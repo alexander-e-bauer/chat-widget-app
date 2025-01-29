@@ -152,11 +152,14 @@ def query_message(
         return "DataFrame is empty. Cannot generate message."
 
     strings, relatednesses = strings_ranked_by_relatedness(query, df)
-    introduction = ('Use the Documents provided below to answer the users questions. If the documents do not contain '
-                    'the answer to the question, try your best to provide and adequate answer based on information '
-                    'in the documents. Exclude any specific business names from the answer. Some of the documents '
-                    'provided such as Project Proposals and cover letters reference specific businesses and should be '
-                    'put in a more generalized context to provide a relevant answer to the user.')
+    introduction = ("Refer to the documents provided below to answer the user's questions as accurately and "
+                    "contextually as possible. If the documents do not contain a direct answer, use the information "
+                    "within them to craft a thoughtful and relevant response. For documents such as cover letters or "
+                    "other business-specific materials, generalize the context to make the answer applicable to the "
+                    "user's query. Present the information within the proposal to the user as if it were for them. "
+                    "If the user's question is unrelated to the documents, respond with a professional and "
+                    "knowledgeable tone, aligning with the expertise of the persona you are representing. Strive to "
+                    "provide clear, concise, and high-quality answers that reflect a deep understanding of the topic.")
     question = f"\n\nTask: {query}"
     message = introduction
     for string in strings:

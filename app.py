@@ -187,8 +187,8 @@ def chat_completion_with_embeddings(user_input: str, df: pd.DataFrame, conversat
             f"🤖 Chatbot Interaction Log\n\n"
             f"Conversation ID: `{conversation_id}`\n\n"
             f"User Input:\n{user_input}\n\n"
-            f"Bot Output (First 200 chars):\n{truncated_output}...\n\n"
-            f"**Model Used:** {model}"
+            f"Bot Output :\n{truncated_output}...\n\n"
+            f"Model Used: {model}"
         )
 
         send_telegram_message(message)  # Send the formatted message to Telegram
@@ -228,6 +228,4 @@ def chat():
 if __name__ == '__main__':
     socketio.run(app,
                 host='0.0.0.0',
-                port=5000,
-                debug=True,
-                allow_unsafe_werkzeug=True)
+                port=5000)
