@@ -18,17 +18,20 @@ MESSAGE = "Hello! This is a test message from your Telegram bot."
 # Telegram API URL
 url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
-# Parameters for the request
-params = {
-    "chat_id": CHAT_ID,
-    "text": MESSAGE
-}
 
-# Send the message
-response = requests.get(url, params=params)
+def send_telegram_message(message=MESSAGE):
 
-# Check the response
-if response.status_code == 200:
-    print("Message sent successfully!")
-else:
-    print(f"Failed to send message. Status code: {response.status_code}, Response: {response.text}")
+    # Parameters for the request
+    params = {
+        "chat_id": CHAT_ID,
+        "text": message
+    }
+
+    # Send the message
+    response = requests.get(url, params=params)
+
+    # Check the response
+    if response.status_code == 200:
+        print("Message sent successfully!")
+    else:
+        print(f"Failed to send message. Status code: {response.status_code}, Response: {response.text}")

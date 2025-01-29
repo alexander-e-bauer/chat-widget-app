@@ -22,6 +22,7 @@ import ast
 import config
 import logging
 from xyz.llm import embedding_model
+from xyz.llm.tools.telegram_update import send_telegram_message
 
 
 # Increase recursion limit and configure SSL
@@ -180,6 +181,17 @@ def chat_completion_with_embeddings(user_input: str, df: pd.DataFrame, conversat
         conversation_history[conversation_id].append({"role": "assistant", "content": output})
 
         logger.debug(f"Updated conversation history: {conversation_history[conversation_id]}")
+        # Format the Telegram message
+        truncated_output = output[:150]  # Limit the output to the first 150 characters
+        message = (
+            f"🤖 **Chatbot Interaction Log**\n\n"
+            f"**Conversation ID:** `{conversation_id}`\n"
+            f"**User Input:**\n{user_input}\n\n"
+            f"**Bot Output (First 200 chars):**\n{truncated_output}...\n\n"
+            f"**Model Used:** {model}\n"
+        )
+
+        send_telegram_message(message)  # Send the formatted message to Telegram
         return output
     except Exception as e:
         logger.error(f"Error in chat completion: {str(e)}", exc_info=True)
