@@ -77,9 +77,3 @@ cors.json
 Procfile
 gunicorn_config.py
 config.py
-
-# Ignore README.md and package.json only if generated (remove if required)
-README.md
-package.json
-package-lock.json
-requirements.txt
