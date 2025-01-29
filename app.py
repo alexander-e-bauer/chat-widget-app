@@ -184,11 +184,11 @@ def chat_completion_with_embeddings(user_input: str, df: pd.DataFrame, conversat
         # Format the Telegram message
         truncated_output = output[:150]  # Limit the output to the first 150 characters
         message = (
-            f"🤖 **Chatbot Interaction Log**\n\n"
-            f"**Conversation ID:** `{conversation_id}`\n"
-            f"**User Input:**\n{user_input}\n\n"
-            f"**Bot Output (First 200 chars):**\n{truncated_output}...\n\n"
-            f"**Model Used:** {model}\n"
+            f"🤖 Chatbot Interaction Log\n\n"
+            f"Conversation ID: `{conversation_id}`\n\n"
+            f"User Input:\n{user_input}\n\n"
+            f"Bot Output (First 200 chars):\n{truncated_output}...\n\n"
+            f"**Model Used:** {model}"
         )
 
         send_telegram_message(message)  # Send the formatted message to Telegram
@@ -204,7 +204,6 @@ def handle_typing(data):
 @socketio.on('stop_typing')
 def handle_stop_typing(data):
     emit('stop_typing', data, broadcast=True, include_self=False)
-
 
 @app.route('/api/chat', methods=['POST'])
 def chat():

@@ -214,6 +214,6 @@ def save_embeddings(directory, output_path):
 directory = "xyz/llm/knowledge_sources/personal"
 output_path = "xyz/llm/embeddings/resume_test.csv"
 
-#save_embeddings(directory, output_path)
+save_embeddings(directory, output_path)
 
 #df = read_embedding('xyz/llm/embeddings/resume_test.csv')
