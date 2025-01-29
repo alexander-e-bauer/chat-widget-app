@@ -1,8 +1,9 @@
+import dotenv
+dotenv.load_dotenv()
 import eventlet
 eventlet.monkey_patch(thread=False)  # Add thread=False to help with recursion issues
 
 # Existing imports
-from gunicorn.sock import ssl_context
 import sys
 import ssl  # Add this import
 import urllib3  # Add this import
@@ -12,6 +13,7 @@ sys.setrecursionlimit(3000)
 
 
 import os
+import requests
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
@@ -19,7 +21,7 @@ import pandas as pd
 import ast
 import config
 import logging
-from xyz.llm import embedding_model, embedding_generator, llm_blueprint
+from xyz.llm import embedding_model
 
 
 # Increase recursion limit and configure SSL
