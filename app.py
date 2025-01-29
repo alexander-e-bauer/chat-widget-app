@@ -19,7 +19,6 @@ import pandas as pd
 import ast
 import config
 import logging
-import redis
 from xyz.llm import embedding_model, embedding_generator, llm_blueprint
 
 
