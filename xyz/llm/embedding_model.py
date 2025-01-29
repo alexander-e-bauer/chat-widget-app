@@ -1,4 +1,3 @@
-import os
 import re
 import pandas as pd
 from scipy import spatial
@@ -135,8 +134,7 @@ def query_message(
         return "DataFrame is empty. Cannot generate message."
 
     strings, relatednesses = strings_ranked_by_relatedness(query, df)
-    introduction = 'Use the Documents provided below to answer the users questions. ' \
-                   'Take care to ensure that your answers are based off of reliable information within the source text.'
+    introduction = 'Use the Documents provided below to answer the users questions. ' 
     question = f"\n\nTask: {query}"
     message = introduction
     for string in strings:
@@ -194,7 +192,7 @@ def ask(
     if print_message:
         print(message)
     messages = [
-        {"role": "system", "content": "You are a helpful assistant who researches and discusses provided documents."},
+        {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": message},
     ]
     response = OAI.client.chat.completions.create(

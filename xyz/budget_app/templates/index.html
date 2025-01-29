@@ -1,0 +1,189 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Paystub Processor Dashboard</title>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+      <script src="https://cdn.tailwindcss.com"></script>
+      <style>
+          body {
+              font-family: 'Inter', sans-serif;
+              background-color: #F9FAFB;
+          }
+
+          .loader {
+              width: 24px;
+              height: 24px;
+              border: 3px solid #f3f3f3;
+              border-radius: 50%;
+              border-top: 3px solid #4F46E5;
+              animation: spin 1s linear infinite;
+              display: none;
+          }
+
+          @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+          }
+
+          .table-container {
+              overflow-x: auto;
+              max-width: 100%;
+          }
+
+          table {
+              min-width: 100%;
+          }
+      </style>
+  </head>
+  <body>
+      <div class="min-h-screen p-8">
+          <div class="max-w-full mx-auto">
+              <!-- Header -->
+              <div class="mb-8">
+                  <h1 class="text-2xl font-bold text-gray-900">Paystub Processor</h1>
+              </div>
+
+              <!-- Main Content -->
+              <div class="bg-white rounded-lg shadow-sm p-6">
+                  <div class="mb-6">
+                      <div class="flex items-center space-x-4">
+                          <button onclick="processPaystubs()"
+                                  class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                              Process New Paystubs
+                          </button>
+                          <button onclick="loadFinancialData()"
+                                  class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                              Load Financial Data
+                          </button>
+                          <div id="processingLoader" class="loader"></div>
+                      </div>
+                  </div>
+
+                  <!-- Status Messages -->
+                  <div id="statusMessage" class="mt-4 p-4 rounded-lg hidden"></div>
+
+                  <!-- Financial Data Table -->
+                  <div id="financialData" class="mt-6">
+                      <h3 class="text-lg font-semibold mb-3">Financial Data</h3>
+                      <div class="table-container">
+                          <table id="dataTable" class="min-w-full divide-y divide-gray-200">
+                              <thead class="bg-gray-50">
+                                  <tr id="tableHeaders">
+                                  </tr>
+                              </thead>
+                              <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <script>
+          function showLoader() {
+              document.getElementById('processingLoader').style.display = 'block';
+          }
+
+          function hideLoader() {
+              document.getElementById('processingLoader').style.display = 'none';
+          }
+
+          function showMessage(message, isError = false) {
+              const statusMessage = document.getElementById('statusMessage');
+              statusMessage.classList.remove('hidden', 'bg-red-50', 'bg-green-50', 'text-red-700', 'text-green-700');
+              statusMessage.classList.add(isError ? 'bg-red-50' : 'bg-green-50');
+              statusMessage.classList.add(isError ? 'text-red-700' : 'text-green-700');
+              statusMessage.textContent = message;
+          }
+
+          function formatValue(value) {
+              if (typeof value === 'number') {
+                  // Format currency values
+                  if (value >= 0) {
+                      return value.toLocaleString('en-US', {
+                          style: 'currency',
+                          currency: 'USD'
+                      });
+                  }
+                  // Format other numbers
+                  return value.toLocaleString();
+              }
+              return value;
+          }
+
+          function loadFinancialData() {
+              showLoader();
+              fetch('/api/get_financial_data')
+                  .then(response => response.json())
+                  .then(data => {
+                      hideLoader();
+                      if (data.status === 'error') {
+                          showMessage(data.message, true);
+                          return;
+                      }
+
+                      // Clear existing table
+                      const headerRow = document.getElementById('tableHeaders');
+                      const tableBody = document.getElementById('tableBody');
+                      headerRow.innerHTML = '';
+                      tableBody.innerHTML = '';
+
+                      // Add headers
+                      data.data.headers.forEach(header => {
+                          headerRow.innerHTML += `
+                              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                  ${header}
+                              </th>
+                          `;
+                      });
+
+                      // Add rows
+                      data.data.rows.forEach(row => {
+                          let rowHtml = '<tr class="hover:bg-gray-50">';
+                          data.data.headers.forEach(header => {
+                              rowHtml += `
+                                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                      ${formatValue(row[header])}
+                                  </td>
+                              `;
+                          });
+                          rowHtml += '</tr>';
+                          tableBody.innerHTML += rowHtml;
+                      });
+
+                      showMessage('Financial data loaded successfully');
+                  })
+                  .catch(error => {
+                      hideLoader();
+                      showMessage('Failed to load financial data: ' + error, true);
+                  });
+          }
+
+          function processPaystubs() {
+              showLoader();
+              fetch('/api/process_paystubs')
+                  .then(response => response.json())
+                  .then(data => {
+                      hideLoader();
+                      if (data.status === 'error') {
+                          showMessage(data.message, true);
+                      } else {
+                          showMessage(data.message || 'Paystubs processed successfully');
+                          // Reload financial data after processing
+                          loadFinancialData();
+                      }
+                  })
+                  .catch(error => {
+                      hideLoader();
+                      showMessage('Failed to process paystubs: ' + error, true);
+                  });
+          }
+
+          // Load financial data when page loads
+          document.addEventListener('DOMContentLoaded', loadFinancialData);
+      </script>
+  </body>
+  </html>

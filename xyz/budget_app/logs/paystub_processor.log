@@ -1,0 +1,56 @@
+2024-11-13 14:04:33,680 - PaystubProcessor - ERROR - Error converting PDF to images: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 14:04:33,681 - PaystubProcessor - ERROR - Error processing paystub /var/folders/82/dsp3j8p16fs6rb2h809q7rz00000gn/T/Paystub1.pdf: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 14:04:34,306 - PaystubProcessor - ERROR - Error converting PDF to images: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 14:04:34,306 - PaystubProcessor - ERROR - Error processing paystub /var/folders/82/dsp3j8p16fs6rb2h809q7rz00000gn/T/Paystub1.pdf: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 14:04:35,168 - PaystubProcessor - ERROR - Error converting PDF to images: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 14:04:35,168 - PaystubProcessor - ERROR - Error processing paystub /var/folders/82/dsp3j8p16fs6rb2h809q7rz00000gn/T/Paystub1.pdf: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 14:04:36,105 - PaystubProcessor - ERROR - Error converting PDF to images: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 14:04:36,105 - PaystubProcessor - ERROR - Error processing paystub /var/folders/82/dsp3j8p16fs6rb2h809q7rz00000gn/T/Paystub1.pdf: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 14:04:36,592 - PaystubProcessor - ERROR - Error converting PDF to images: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 14:04:36,592 - PaystubProcessor - ERROR - Error processing paystub /var/folders/82/dsp3j8p16fs6rb2h809q7rz00000gn/T/Paystub1.pdf: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 14:04:38,850 - PaystubProcessor - ERROR - Error converting PDF to images: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 14:04:38,850 - PaystubProcessor - ERROR - Error processing paystub /var/folders/82/dsp3j8p16fs6rb2h809q7rz00000gn/T/Paystub1.pdf: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 14:04:39,418 - PaystubProcessor - ERROR - Error converting PDF to images: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 14:04:39,419 - PaystubProcessor - ERROR - Error processing paystub /var/folders/82/dsp3j8p16fs6rb2h809q7rz00000gn/T/Paystub1.pdf: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 14:04:40,083 - PaystubProcessor - ERROR - Error converting PDF to images: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 14:04:40,083 - PaystubProcessor - ERROR - Error processing paystub /var/folders/82/dsp3j8p16fs6rb2h809q7rz00000gn/T/Paystub1.pdf: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 14:04:40,590 - PaystubProcessor - ERROR - Error converting PDF to images: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 14:04:40,590 - PaystubProcessor - ERROR - Error processing paystub /var/folders/82/dsp3j8p16fs6rb2h809q7rz00000gn/T/Paystub1.pdf: Unable to get page count. Is poppler installed and in PATH?
+2024-11-13 15:34:54,626 - budget - INFO - Initialized new Excel file: financial_data/financial_master.xlsx
+2024-11-13 15:35:29,274 - __main__ - INFO - Initialized new Excel file: financial_master.xlsx
+2024-11-13 15:35:40,069 - __main__ - INFO - Successfully saved data to financial_master.xlsx
+2024-11-13 15:36:33,243 - __main__ - INFO - Successfully saved data to financial_master.xlsx
+2024-11-13 15:38:53,321 - __main__ - INFO - Initialized new Excel file: financial_master.xlsx
+2024-11-13 15:39:01,526 - __main__ - INFO - Successfully saved data to financial_master.xlsx
+2024-11-13 15:39:50,909 - __main__ - ERROR - Error saving to Excel: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-13 15:39:50,910 - __main__ - ERROR - Error processing PDF: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-16 17:28:33,288 - budget - ERROR - Error saving to Excel: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-16 17:28:33,288 - budget - ERROR - Error processing PDF: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-16 17:28:33,782 - budget - ERROR - Error saving to Excel: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-16 17:28:33,782 - budget - ERROR - Error processing PDF: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-16 17:29:38,870 - budget - ERROR - Error saving to Excel: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-16 17:29:38,870 - budget - ERROR - Error processing PDF: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-16 17:29:41,531 - budget - ERROR - Error saving to Excel: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-16 17:29:41,531 - budget - ERROR - Error processing PDF: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-16 17:30:46,338 - budget - ERROR - Error saving to Excel: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-16 17:30:46,339 - budget - ERROR - Error processing PDF: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-16 17:30:48,606 - budget - ERROR - Error saving to Excel: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-16 17:30:48,606 - budget - ERROR - Error processing PDF: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-16 17:53:29,388 - budget - ERROR - Error saving to Excel: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-16 17:53:29,389 - budget - ERROR - Error processing PDF: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-16 17:53:31,539 - budget - ERROR - Error processing with GPT: Expecting value: line 1 column 1 (char 0)
+2024-11-16 17:53:31,539 - budget - ERROR - Error processing PDF: Expecting value: line 1 column 1 (char 0)
+2024-11-18 16:59:55,226 - budget - ERROR - Error saving to Excel: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-18 16:59:55,226 - budget - ERROR - Error processing PDF: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-18 17:00:41,995 - budget - ERROR - Error saving to Excel: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-18 17:00:41,995 - budget - ERROR - Error processing PDF: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-18 17:00:43,025 - budget - ERROR - Error saving to Excel: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-18 17:00:43,025 - budget - ERROR - Error processing PDF: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-18 17:01:49,939 - budget - ERROR - Error saving to Excel: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-18 17:01:49,939 - budget - ERROR - Error processing PDF: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-18 17:01:51,550 - budget - ERROR - Error saving to Excel: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-18 17:01:51,550 - budget - ERROR - Error processing PDF: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-18 17:01:57,221 - budget - ERROR - Error saving to Excel: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-18 17:01:57,221 - budget - ERROR - Error processing PDF: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-18 17:01:59,345 - budget - ERROR - Error saving to Excel: 'PaystubProcessor' object has no attribute 'headers'
+2024-11-18 17:01:59,346 - budget - ERROR - Error processing PDF: 'PaystubProcessor' object has no attribute 'headers'

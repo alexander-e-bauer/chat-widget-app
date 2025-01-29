@@ -4,7 +4,16 @@ import { Send, Bot, User, Loader2, RefreshCw, Moon, Sun } from 'lucide-react';
 import MarkdownRenderer from "./MarkdownRenderer";
 import io from 'socket.io-client';
 
-const API_URL = 'https://chat-widget-app-8c3cca0ff3c0.herokuapp.com';
+// Temporary override to force production URL in development
+const useProductionUrl = false; // Set to `true` to force production URL
+
+const API_URL = useProductionUrl
+  ? 'https://chat-widget-app-8c3cca0ff3c0.herokuapp.com' // Production URL
+  : (process.env.NODE_ENV === 'production'
+      ? 'https://chat-widget-app-8c3cca0ff3c0.herokuapp.com' // Production URL
+      : 'https://7be8-2601-401-4200-4c80-ed09-3e9b-9252-da3c.ngrok-free.app'); // Development (ngrok) URL
+
+console.log(`NODE_ENV is: ${process.env.NODE_ENV}`);
 
 const Button = React.forwardRef(({ className, children, ...props }, ref) => (
   <button
@@ -23,7 +32,6 @@ const Input = React.forwardRef(({ className, ...props }, ref) => (
     {...props}
   />
 ));
-
 
 const ScrollArea = React.forwardRef(({ className, children }, ref) => (
   <div
@@ -75,7 +83,6 @@ const ChatbotWidget = () => {
     conversationIdRef.current = newConversationId;
     localStorage.setItem('conversationId', newConversationId);
   }
-  console.log("Current conversation ID:", conversationIdRef.current);
 }, []);
 
   useEffect(() => {
@@ -132,8 +139,6 @@ const ChatbotWidget = () => {
     window.removeEventListener('resize', adjustHeight);
   };
 }, []);
-
-
 
 
   const sendMessage = async () => {

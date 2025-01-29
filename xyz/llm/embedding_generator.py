@@ -13,13 +13,11 @@ import tiktoken
 import openai
 import config
 import xyz.llm.embedding_model as flask_embeddings
-from xyz.llm.embedding_model import embedding_model
+from xyz.llm.embedding_model import embedding_model, read_embedding
 
 
 log = config.log
 OAI = config.OAI
-
-
 
 
 def num_tokens(text):
@@ -72,45 +70,6 @@ def get_embedding(text_to_embed):
     return embedding
 
 
-def get_source_code(directory):
-    """Returns the source code of all Python files in a directory."""
-    df = pd.DataFrame(columns=['filepath', 'text'])
-    string = []
-    paths = []
-    for root, dirs, files in os.walk(directory):
-        if root.startswith('./lib'):
-            continue
-        elif root.startswith('./bin'):
-            continue
-        elif root.startswith('./include'):
-            continue
-        else:
-            for file in files:
-                if file.endswith(".py"):
-                    file_path = os.path.join(root, file)
-                    raw_text = read_file_as_raw_text(file_path)
-                elif file.endswith(".html"):
-                    file_path = os.path.join(root, file)
-                    raw_text = read_file_as_raw_text(file_path)
-                elif file.endswith(".css"):
-                    file_path = os.path.join(root, file)
-                    raw_text = read_file_as_raw_text(file_path)
-                elif file.endswith(".js"):
-                    file_path = os.path.join(root, file)
-                    raw_text = read_file_as_raw_text(file_path)
-
-                else:
-                    continue
-                log(f"Source code: {file_path}")
-                string.append(raw_text), paths.append(file_path)
-
-                df = df._append({'filepath': file_path, 'text': raw_text}, ignore_index=True)
-
-    return df
-
-
-
-
 def get_document_text(directory):
     """
     Returns the text content and embeddings of all Word documents, PDFs, Markdown files,
@@ -118,10 +77,15 @@ def get_document_text(directory):
     """
     df = pd.DataFrame(columns=['filepath', 'text', 'embedding'])
 
+    # Check if the directory exists
+    if not os.path.exists(directory):
+        raise FileNotFoundError(f"Directory does not exist: {os.path.abspath(directory)}")
+
     # Process documents in directory
     for root, dirs, files in os.walk(directory):
+        print(f"Scanning directory: {root}")
         for file in files:
-            if file.startswith('~$'):
+            if file.startswith('~$'):  # Skip temporary files
                 continue
 
             if file.endswith(('.doc', '.docx', '.pdf', '.md', '.html')):
@@ -129,16 +93,22 @@ def get_document_text(directory):
 
                 try:
                     if file.endswith(('.doc', '.docx')):
-                        raw_text = read_word_document(file_path)  # You need to implement this function
+                        raw_text = read_word_document(file_path)
                     elif file.endswith('.pdf'):
-                        raw_text = read_pdf_document(file_path)  # You need to implement this function
+                        raw_text = read_pdf_document(file_path)
                     elif file.endswith('.md'):
                         raw_text = read_markdown_file(file_path)
                     elif file.endswith('.html'):
                         raw_text = read_html_file(file_path)
+                    else:
+                        print("No Readable Documents Found (.docx, .pdf, .md, .html)")
+                        return
 
-                    print(f"Processed document: {file_path}")
-                    df = df._append({'filepath': file_path, 'text': raw_text}, ignore_index=True)
+                    if raw_text.strip():  # Check if the extracted text is not empty
+                        print(f"Processed document: {file_path}")
+                        df = df._append({'filepath': file_path, 'text': raw_text}, ignore_index=True)
+                    else:
+                        print(f"No text found in document: {file_path}")
                 except Exception as e:
                     print(f"Error processing {file_path}: {str(e)}")
 
@@ -200,41 +170,6 @@ def read_file_as_raw_text(file_path):
         return "File not found."
 
 
-def read_text_from_file(file_path):
-    with open(file_path, 'r') as file:
-        file_content = file.read()
-    return file_content
-
-source_code = ''
-
-
-def get_completion(text, script=source_code):
-    completion = openai.chat.completions.create(
-        model='gpt-4o',
-        messages=[
-            {"role": "system", "content": "You take python, javascript, css, html, and sql code as input "
-                                          "complete/improve/remove errors from the code, "
-                                          "and return the finished code as output. If there is something that could "
-                                          "be added to the file to make it better, "
-                                          "attempt to integrate it into the code."
-                                          f"The code in its entirety is given below:\n{script}"},
-            {"role": "user", "content": f"{text}"}
-        ]
-    )
-
-    result = completion.choices[0].message.content
-    log(f"\nCompletion: \nPrompt: {text}\nResult: {result}")
-    return result
-
-
-def create_excel_file(filepath):
-    # Save the DataFrame to an Excel file
-    df = get_source_code(Path())
-
-    df.to_excel(filepath, index=False, header=False, engine='openpyxl')
-    return df
-
-
 def create_excel_file_text(target_directory, filepath):
     # Save the DataFrame to an Excel file
     df = get_document_text(target_directory)
@@ -242,20 +177,6 @@ def create_excel_file_text(target_directory, filepath):
     df.to_excel(filepath, index=False, header=False, engine='openpyxl')
     return df
 
-
-def save_source():
-    global source_code
-    filepath = Path('code/source_code.txt')
-    source_code = get_source_code(Path())
-    source_code = '\n'.join(source_code)
-    num_tokens(source_code)
-    save_text_to_file(source_code, filepath)
-
-
-def create_embeddings_of_self():
-    create_excel_file('../llm/embeddings/code_metadata.xlsx')
-    flask_embeddings.create_embedding_df('../llm/embeddings/code_metadata.xlsx',
-                                         '../llm/embeddings/code_metadata.csv')
 
 def create_embeddings_of_text(target, name):
     create_excel_file_text(target, f'../llm/embeddings/{name}.xlsx')
@@ -268,28 +189,26 @@ def relatedness(prompt):
     print(rel)
     return rel
 
-#df = read_embedding('embeddings/resume_test.csv')
-
-#print(df)
-#answer = ask_familiar("explain this code", df=df, print_message=True, conversation_id='conversation-1727902220357-g6xwoelao')
-#print(answer)
-
-
-#create_embeddings_of_text('../llm/knowledge_sources/personal', 'resume_test')
-#create_embeddings_of_self()
-
 
 def save_embeddings(directory, output_path):
+    # Ensure the parent directory for the output file exists
+    output_dir = os.path.dirname(output_path)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)  # Create the directory if it doesn't exist
+
+    # Process and save embeddings
     df = get_document_text(directory)  # For processing documents in a directory
+    if df is None or df.empty:
+        raise ValueError("No valid documents found in the directory.")
     print(df.head())
     df.to_csv(output_path, index=False)
 
 
-directory = "knowledge_sources/personal"
-output_path = "embeddings/resume_test.csv"
+
+
+directory = "xyz/llm/knowledge_sources/personal"
+output_path = "xyz/llm/embeddings/resume_test.csv"
+
 #save_embeddings(directory, output_path)
 
-#df = read_embedding('embeddings/resume_test.csv')
-#rint(df)
-#answer = ask("talk to me about this resume", df=df, print_message=True, conversation_id='conversation-1727902220357-g6xwoelao')
-#print(answer)
+df = read_embedding('xyz/llm/embeddings/resume_test.csv')

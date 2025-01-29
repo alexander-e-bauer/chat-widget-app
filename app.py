@@ -1,7 +1,17 @@
 import eventlet
-eventlet.monkey_patch()
+eventlet.monkey_patch(thread=False)  # Add thread=False to help with recursion issues
+
+# Existing imports
+from gunicorn.sock import ssl_context
+import sys
+import ssl  # Add this import
+import urllib3  # Add this import
+
+# Increase recursion limit and configure SSL
+sys.setrecursionlimit(3000)
 
 
+import os
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
@@ -9,7 +19,28 @@ import pandas as pd
 import ast
 import config
 import logging
+import redis
 from xyz.llm import embedding_model, embedding_generator, llm_blueprint
+
+
+# Increase recursion limit and configure SSL
+sys.setrecursionlimit(3000)
+
+# SSL Configuration
+def create_ssl_context():
+    try:
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+        return context
+    except Exception as e:
+        logger.error(f"Failed to create SSL context: {e}")
+        return None
+
+# Configure SSL for requests
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+ssl_context = create_ssl_context()
+
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -17,12 +48,42 @@ logger = logging.getLogger(__name__)
 
 openai_client = config.openai_client
 
-
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["https://alexander-e-bauer.github.io"]}})
-socketio = SocketIO(app, cors_allowed_origins=["https://alexander-e-bauer.github.io"], async_mode='eventlet')
+# Configure CORS
+CORS(app, resources={
+    r"/api/*": {
+        "origins": [
+            "http://localhost:3000",  # React development server
+            "http://localhost:5000",  # Flask development server
+            "http://localhost:6379",  # Flask development server
+            "https://chat-widget-app-8c3cca0ff3c0.herokuapp.com",  # Production URL
+            "https://alexander-e-bauer.github.io"  # Add your frontend domain
+        ],
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+})
+
+# Configure SocketIO with CORS settings
+socketio = SocketIO(app, cors_allowed_origins=[
+    "http://localhost:3000",
+    "http://localhost:5000",
+    "https://chat-widget-app-8c3cca0ff3c0.herokuapp.com",
+    "https://alexander-e-bauer.github.io"], async_mode='eventlet'
+)
 # In-memory storage for conversation history
 conversation_history = {}
+
+def get_redis_client():
+    try:
+        redis_url = os.environ.get('REDIS_URL', 'redis://localhost:6379')
+        client = redis.from_url(redis_url)
+        client.ping()  # Test connection
+        return client
+    except Exception as e:
+        logger.warning(f"Redis connection failed: {str(e)}")
+        return None
+
 
 def read_embedding(embedding_path):
     return pd.read_csv(
@@ -34,6 +95,7 @@ def read_embedding(embedding_path):
     )
 df = read_embedding('xyz/llm/embeddings/resume_test.csv')
 print(df)
+
 
 def chat_completion(user_input, conversation_id, system_input="You are a helpful assistant",
                     tools=None, streaming=False):
@@ -153,5 +215,10 @@ def chat():
         logger.error(f"Error in chat completion: {str(e)}", exc_info=True)
         return jsonify({"error": f"An error occurred while processing your request: {str(e)}"}), 500
 
+
 if __name__ == '__main__':
-    socketio.run(app, debug=True, port=5000, allow_unsafe_werkzeug=True)
+    socketio.run(app,
+                host='0.0.0.0',
+                port=5000,
+                debug=True,
+                allow_unsafe_werkzeug=True)

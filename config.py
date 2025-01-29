@@ -31,6 +31,7 @@ def log(msg):
 
 class Config:
     """Base configuration variables."""
+    production = False
 
     # Configure PostgreSQL Database
     username_db = os.getenv('POSTGRES_USER')
