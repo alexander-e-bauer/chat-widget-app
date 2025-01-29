@@ -73,7 +73,3 @@ cors.json
 *.rej
 .gitattributes
 
-# Configurations
-Procfile
-gunicorn_config.py
-config.py
