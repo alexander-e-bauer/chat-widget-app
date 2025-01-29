@@ -20,14 +20,11 @@ python_modules/include/
 python_modules/lib/
 python_modules/share/
 
-# Build/Production
-/build/
+
 dist/
 *.egg-info/
 .eggs/
 
-# Public/Static files
-/public/
 
 # Testing
 /coverage/
@@ -72,4 +69,3 @@ cors.json
 *.orig
 *.rej
 .gitattributes
-
