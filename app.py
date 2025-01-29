@@ -81,16 +81,6 @@ socketio = SocketIO(app, cors_allowed_origins=[
 # In-memory storage for conversation history
 conversation_history = {}
 
-def get_redis_client():
-    try:
-        redis_url = os.environ.get('REDIS_URL', 'redis://localhost:6379')
-        client = redis.from_url(redis_url)
-        client.ping()  # Test connection
-        return client
-    except Exception as e:
-        logger.warning(f"Redis connection failed: {str(e)}")
-        return None
-
 
 def read_embedding(embedding_path):
     return pd.read_csv(
