@@ -90,7 +90,7 @@ root
 └── requirements.txt
 ```
 
-*Make sure to edit the system_input.txt and replace
+**Make sure to edit the system_input.txt and replace the example source with your own documents*
 
 ---
 
