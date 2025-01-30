@@ -1,6 +1,6 @@
 # **React + Flask Chatbot Application**
 
-This repository hosts a fully functional chatbot application that combines a **React frontend** with a **Flask backend**. The app leverages **OpenAI's GPT-based embeddings** for intelligent responses, document embeddings, and conversational memory. It supports real-time communication via **Socket.IO** and includes features like **dark mode**, **conversation history**, and **document-based query handling**.
+This repository hosts a fully functional chatbot application that combines a **React frontend** with a **Flask backend**. The app leverages intelligent responses, document embeddings, and conversational memory. It supports real-time communication via **Socket.IO** and includes features like **dark mode**, **conversation history**, and **document-based query handling**.
 
 ---
 
