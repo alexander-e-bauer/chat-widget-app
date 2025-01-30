@@ -67,12 +67,19 @@ root
 ├── frontend/ (React App)
 │   ├── src/
 │   │   ├── components/
+│   │   │   ├── ChatbotWidget.js
 │   │   ├── App.js
-│   │   ├── ChatbotWidget.js
+
 │   │   └── ...
 │   └── public/
 ├── backend/ (Flask App)
-│   ├── xyz/llm/
+│   ├── llm/
+│   │   ├── embeddings/
+│   │   │   ├── example_embeddings.csv
+│   │   │   ├── system_input.txt
+│   │   ├── knowledge_sources/
+│   │   │   ├── example_source.md
+│   │   │   ├── [Put source douments here]
 │   │   ├── embedding_model.py
 │   │   ├── embedding_generator.py
 │   │   └── ...
@@ -82,6 +89,8 @@ root
 ├── README.md
 └── requirements.txt
 ```
+
+*Make sure to edit the system_input.txt and replace
 
 ---
 
