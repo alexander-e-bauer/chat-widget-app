@@ -1,5 +1,3 @@
-import dotenv
-dotenv.load_dotenv()
 import eventlet
 eventlet.monkey_patch(thread=False)  # Add thread=False to help with recursion issues
 

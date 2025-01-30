@@ -211,8 +211,8 @@ def save_embeddings(directory, output_path):
 
 
 
-directory = "xyz/llm/knowledge_sources/personal"
-output_path = "xyz/llm/embeddings/resume_test.csv"
+directory = "knowledge_sources/"
+output_path = "embeddings/example_embeddings.csv"
 
 save_embeddings(directory, output_path)
 

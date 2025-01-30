@@ -1,4 +1,3 @@
-
 # **React + Flask Chatbot Application**
 
 This repository hosts a fully functional chatbot application that combines a **React frontend** with a **Flask backend**. The app leverages **OpenAI's GPT-based embeddings** for intelligent responses, document embeddings, and conversational memory. It supports real-time communication via **Socket.IO** and includes features like **dark mode**, **conversation history**, and **document-based query handling**.
@@ -15,6 +14,9 @@ This repository hosts a fully functional chatbot application that combines a **R
   - [Backend (Flask)](#backend-flask)
 - [Environment Variables](#environment-variables)
 - [Usage](#usage)
+- [Embedding Generator](#embedding-generator)
+  - [How It Works](#how-it-works)
+  - [Folder Structure](#folder-structure)
 - [Deployment](#deployment)
   - [Frontend Deployment](#frontend-deployment)
   - [Backend Deployment](#backend-deployment)
@@ -119,7 +121,8 @@ root
    python app.py
    ```
    The backend will run on `http://localhost:5000`.
-   
+
+---
 
 ## **Usage**
 1. Start both the frontend and backend servers.
@@ -129,6 +132,61 @@ root
    - Upload documents for embeddings.
    - Toggle dark mode.
    - Start new conversations.
+
+---
+
+## **Embedding Generator**
+
+### **How It Works**
+
+The `embedding_generator.py` script is used to process your knowledge base and create embeddings for documents. These embeddings are then utilized by the chatbot for intelligent, context-aware responses.
+
+#### **Steps to Use the Embedding Generator**
+1. **Prepare Your Knowledge Base**:
+   - Place all your documents (`.docx`, `.pdf`, `.md`, `.html`) in the folder:  
+     `xyz/llm/knowledge_sources/personal`.
+
+2. **Generate Embeddings**:
+   - Run the `embedding_generator.py` script to process the documents and generate embeddings:
+     ```bash
+     python embedding_generator.py
+     ```
+   - This script will:
+     - Extract text from the documents in the specified folder.
+     - Generate embeddings for the extracted text using OpenAI's API.
+     - Save the embeddings to a CSV file located at:  
+       `xyz/llm/embeddings/resume_test.csv`.
+
+3. **Verify the Output**:
+   - Ensure that the `resume_test.csv` file is created in the `xyz/llm/embeddings/` folder.  
+   - The chatbot will use this file to retrieve embeddings for intelligent responses.
+
+4. **Automatic Integration with Chatbot**:
+   - The chatbot automatically reads the embeddings from the file using:
+     ```python
+     df = read_embedding('xyz/llm/embeddings/resume_test.csv')
+     ```
+   - Ensure the folder structure matches the paths specified in the scripts. If the structure is not set up correctly, the chatbot will not be able to load the embeddings.
+
+### **Folder Structure**
+
+To ensure the system works correctly, the folder structure must follow this layout:
+
+```
+xyz/
+├── llm/
+│   ├── embeddings/
+│   │   ├── resume_test.csv
+│   │   ├── system_input.txt
+│   ├── knowledge_sources/
+│   │   ├── personal/
+│   │       ├── <your-documents-here>
+│   ├── tools/
+│   │   ├── telegram_update.py
+│   ├── embedding_model.py
+│   ├── embedding_generator.py
+├── app.py
+```
 
 ---
 
