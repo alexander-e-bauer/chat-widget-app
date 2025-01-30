@@ -68,8 +68,8 @@ root
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── ChatbotWidget.js
+│   │   │   ├── MarkdownRenderer.js
 │   │   ├── App.js
-
 │   │   └── ...
 │   └── public/
 ├── backend/ (Flask App)
