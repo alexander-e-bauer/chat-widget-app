@@ -79,7 +79,7 @@ root
 │   │   │   ├── system_input.txt
 │   │   ├── knowledge_sources/
 │   │   │   ├── example_source.md
-│   │   │   ├── [Put source douments here]
+│   │   │   ├── <your-documents-here>
 │   │   ├── embedding_model.py
 │   │   ├── embedding_generator.py
 │   │   └── ...
@@ -188,8 +188,7 @@ xyz/
 │   │   ├── resume_test.csv
 │   │   ├── system_input.txt
 │   ├── knowledge_sources/
-│   │   ├── personal/
-│   │       ├── <your-documents-here>
+│   │   ├── <your-documents-here>
 │   ├── tools/
 │   │   ├── telegram_update.py
 │   ├── embedding_model.py
